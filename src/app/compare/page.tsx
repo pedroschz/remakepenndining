@@ -14,9 +14,6 @@ export default function ComparePage() {
     <>
       <section className="container-edit pt-16 md:pt-24 pb-2">
         <FadeIn className="max-w-3xl">
-          <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6">
-            Peer comparison
-          </p>
           <h1
             className="font-serif text-ink leading-[1.02] tracking-[-0.025em]"
             style={{ fontSize: "var(--text-display-lg)" }}

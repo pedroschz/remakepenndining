@@ -6,15 +6,12 @@ export function StatsGrid() {
     <section className="rule-soft">
       <div className="container-edit py-16 md:py-24">
         <FadeIn>
-          <p className="text-xs tracking-[0.2em] uppercase text-ink-muted mb-4">
-            By the numbers
-          </p>
           <h2
             className="font-serif text-ink max-w-3xl leading-[1.02] tracking-[-0.02em]"
             style={{ fontSize: "var(--text-display-md)" }}
           >
-            The case against Bon Appétit is not a matter of opinion.
-            It is a matter of record.
+            The case against Bon Appétit is not a matter of opinion but
+            a matter of record.
           </h2>
         </FadeIn>
 

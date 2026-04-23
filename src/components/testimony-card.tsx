@@ -85,7 +85,7 @@ export function TestimonyCard({ t }: { t: Testimony }) {
           </button>
         )}
         {reported && (
-          <span className="text-xs text-ink-muted">Thanks — report filed.</span>
+          <span className="text-xs text-ink-muted">Thanks; report filed.</span>
         )}
       </footer>
 

@@ -20,24 +20,6 @@ export function Timeline({ preview = false }: Props) {
   return (
     <section className="rule-soft">
       <div className="container-edit py-16 md:py-24">
-        <FadeIn className="max-w-3xl">
-          <p className="text-xs tracking-[0.2em] uppercase text-ink-muted mb-4">
-            Timeline of incidents
-          </p>
-          <h2
-            className="font-serif text-ink leading-[1.02] tracking-[-0.02em]"
-            style={{ fontSize: "var(--text-display-md)" }}
-          >
-            Not isolated lapses.
-            <span className="text-accent italic"> A pattern.</span>
-          </h2>
-          <p className="mt-6 text-lg text-ink-soft leading-relaxed">
-            Every entry below is drawn from Philadelphia Department of Public
-            Health inspection reports or Daily Pennsylvanian investigations.
-            Links go to primary sources.
-          </p>
-        </FadeIn>
-
         <ol className="mt-14 relative">
           <div
             aria-hidden

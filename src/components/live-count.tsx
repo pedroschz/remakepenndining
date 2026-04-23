@@ -60,10 +60,6 @@ export function LiveCount({ className, verbose }: Props) {
         className
       )}
     >
-      <span className="relative flex h-1.5 w-1.5">
-        <span className="absolute inset-0 rounded-full bg-accent animate-ping opacity-60" />
-        <span className="relative h-1.5 w-1.5 rounded-full bg-accent" />
-      </span>
       <span className="font-medium">{formatNumber(count)}</span>
       <span className="text-ink-muted">
         {verbose ? "Penn community have signed" : "signed"}

@@ -11,9 +11,6 @@ export default function SharePage() {
   return (
     <section className="container-edit py-16 md:py-24 max-w-3xl">
       <FadeIn>
-        <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6">
-          Share the campaign
-        </p>
         <h1
           className="font-serif text-ink leading-[1.02] tracking-[-0.025em]"
           style={{ fontSize: "var(--text-display-lg)" }}
@@ -33,7 +30,7 @@ export default function SharePage() {
       <FadeIn delay={0.2} className="mt-16">
         <h2 className="font-serif text-xl text-ink mb-4">A short version</h2>
         <blockquote className="rounded-xl border border-rule bg-cream-50 p-6 text-ink-soft leading-relaxed whitespace-pre-wrap">
-          {`Penn Dining has logged 13 years of health violations — including a dead mouse in canned food storage as recently as Jan 2026 — while charging $6,960/yr. Every top-ranked Ivy peer self-operates. Johns Hopkins already ended its Bon Appétit contract and raised worker wages.
+          {`Penn Dining has logged 13 years of health violations; including a dead mouse in canned food storage as recently as Jan 2026; while charging $6,960/yr. Every top-ranked Ivy peer self-operates. Johns Hopkins already ended its Bon Appétit contract and raised worker wages.
 
 Sign: remakepenndining.org`}
         </blockquote>

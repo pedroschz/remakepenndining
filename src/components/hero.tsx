@@ -42,7 +42,7 @@ export function Hero() {
           Thirteen years of health violations. A $6,960 meal plan. A contractor
           that has laid off Penn workers and been found with a dead mouse in
           canned-food storage as recently as January 2026. It is time to insource
-          Penn Dining — the way every top-ranked Ivy peer already has.
+          Penn Dining; the way every top-ranked Ivy peer already has.
         </motion.p>
 
         <motion.div
@@ -70,15 +70,6 @@ export function Hero() {
           <LiveCount verbose className="sm:hidden mt-2" />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.7, ease }}
-          className="mt-16 md:mt-24 flex items-center gap-3 text-xs text-ink-faint"
-        >
-          <span className="h-px w-8 bg-rule" />
-          Scroll for the evidence
-        </motion.div>
       </div>
     </section>
   );

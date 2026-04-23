@@ -19,7 +19,7 @@ export default function Error({
         Sorry.
       </h1>
       <p className="mt-6 text-ink-soft">
-        Something on our side didn&rsquo;t work. You can try again — if this
+        Something on our side didn&rsquo;t work. You can try again if this
         keeps happening, the bug is ours, not yours.
       </p>
       {error.digest && (

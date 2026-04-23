@@ -127,7 +127,7 @@ export const timelineEvents: TimelineEvent[] = [
   {
     date: "Jan 2026",
     year: 2026,
-    title: "Dead mouse in canned food storage — repeat Cat. 53 violation",
+    title: "Dead mouse in canned food storage; repeat Cat. 53 violation",
     facility: "1920 Commons",
     detail:
       "Found on a sticky trap in the canned food storage room. Cited explicitly as a repeat violation, contradicting Penn Dining's 2023 assurance of no repeat uncorrected findings.",
@@ -264,7 +264,7 @@ export const headlineStats = [
 
 export const communityGuidelines = [
   "Focus on experiences and observable conditions. No personal attacks on individual workers.",
-  "Do not share identifying information — names, photos of faces, student IDs, or private contact details.",
+  "Do not share identifying information; names, photos of faces, student IDs, or private contact details.",
   "Be specific. 'A meal at 1920 Commons in October' is more useful than 'Penn food is bad.'",
   "If you upload an image, make sure you personally took it and have the right to share it.",
   "No slurs, harassment, or targeted hate.",

@@ -26,7 +26,7 @@ export function ComparisonTable() {
           <p className="mt-6 text-lg text-ink-soft leading-relaxed">
             Johns Hopkins, Kent State, Oberlin, and the University of Rochester
             have already terminated their contracts. Penn pays 20–40% more per
-            year than UMass Amherst — ranked #1 for nine consecutive years.
+            year than UMass Amherst, the #1 for nine consecutive years.
           </p>
         </FadeIn>
 

@@ -38,10 +38,6 @@ export function Nav() {
     >
       <div className="container-edit flex h-16 items-center justify-between gap-6">
         <Link href="/" className="group flex items-center gap-3">
-          <span
-            aria-hidden
-            className="h-1.5 w-1.5 rounded-full bg-accent transition-transform duration-300 group-hover:scale-150"
-          />
           <span className="font-serif text-[1.05rem] tracking-tight text-ink">
             Remake Penn Dining
           </span>
@@ -66,7 +62,6 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <LiveCount className="hidden sm:inline-flex" />
           <Link
             href="/sign"
             className="inline-flex items-center rounded-full bg-ink text-cream-50 px-4 py-2 text-[0.875rem] font-medium transition-all duration-200 hover:bg-accent hover:scale-[1.02] active:scale-[0.98]"

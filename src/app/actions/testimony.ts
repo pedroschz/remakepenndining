@@ -39,7 +39,7 @@ const AFFIL = [
 ] as const;
 
 const TestimonySchema = z.object({
-  body: z.string().min(30, "Tell us a little more — at least 30 characters.").max(2000),
+  body: z.string().min(30, "Tell us a little more; at least 30 characters.").max(2000),
   diningHall: z.enum(DINING_HALLS).optional().or(z.literal("")),
   incidentMonth: z.string().optional().or(z.literal("")),
   affiliation: z.enum(AFFIL).optional().or(z.literal("")),

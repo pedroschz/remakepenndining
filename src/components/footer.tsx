@@ -14,7 +14,7 @@ export function Footer() {
           <p className="mt-3 max-w-md leading-relaxed">
             A student-organized petition built on the public record. We are not
             affiliated with the University of Pennsylvania. Every claim on this
-            site cites a primary source — health inspection report, news
+            site cites a primary source; health inspection report, news
             article, or court filing.
           </p>
         </div>

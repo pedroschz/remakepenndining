@@ -5,22 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { PENN_EMAIL_REGEX } from "@/lib/utils";
 
 function siteUrl() {
-  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-}
-
-export async function signInWithGoogle() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${siteUrl()}/auth/callback`,
-      queryParams: { hd: "upenn.edu", prompt: "select_account" },
-    },
-  });
-  if (error || !data.url) {
-    return { ok: false, error: error?.message ?? "Could not start Google sign-in." };
-  }
-  redirect(data.url);
+  return process.env.NEXT_PUBLIC_SITE_URL ?? "https://remakepenndining.org";
 }
 
 export async function signInWithMagicLink(formData: FormData) {

@@ -27,7 +27,8 @@ pnpm install
 3. **Authentication → Providers**
    - Enable **Email** (magic link) — no further config needed
    - Enable **Google**, set the OAuth credentials from Google Cloud Console,
-     and add `http://localhost:3000/auth/callback` plus your production URL
+     and add `http://localhost:3000/auth/callback` plus
+     `https://remakepenndining.org/auth/callback`
      to the redirect allowlist.
 4. **Authentication → URL Configuration** → set Site URL to your site
    (`http://localhost:3000` in dev).
@@ -40,7 +41,7 @@ Copy `.env.example` to `.env.local` and fill in:
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...      # Server-only. Used for image uploads.
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=https://remakepenndining.org
 NEXT_PUBLIC_SIGNATURE_GOAL=5000
 ```
 

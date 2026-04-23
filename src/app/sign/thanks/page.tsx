@@ -22,7 +22,7 @@ export default function ThanksPage() {
           Thank you.
         </h1>
         <p className="mt-6 text-lg text-ink-soft leading-relaxed">
-          Your signature has been recorded. Petitions only work when they grow —
+          Your signature has been recorded. Petitions only work when they grow;
           the most effective thing you can do in the next sixty seconds is send
           this to three friends.
         </p>

@@ -19,11 +19,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://remakepenndining.org"
   ),
   title: {
     default: "Remake Penn Dining",
-    template: "%s · Remake Penn Dining",
+    template: "Remake Penn Dining",
   },
   description:
     "A student petition to end Bon Appétit's contract at Penn, built on the public record: 13 years of health violations, a 2026–27 meal plan of $6,960, and peer universities that have already made the change.",
@@ -31,14 +31,14 @@ export const metadata: Metadata = {
     type: "website",
     title: "Remake Penn Dining",
     description:
-      "The case against Bon Appétit at Penn — evidence, signatures, and testimonies.",
+      "The case against Bon Appétit at Penn (evidence, signatures, and testimonies).",
     images: ["/api/og"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Remake Penn Dining",
     description:
-      "The case against Bon Appétit at Penn — evidence, signatures, and testimonies.",
+      "The case against Bon Appétit at Penn (evidence, signatures, and testimonies).",
     images: ["/api/og"],
   },
   robots: { index: true, follow: true },

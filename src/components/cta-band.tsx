@@ -22,7 +22,7 @@ export function CtaBand() {
           <p className="mt-6 text-lg text-cream-300/90 leading-relaxed max-w-2xl">
             Every signature increases pressure. The 2020 worker petition gathered
             8,322 signatures and forced Penn to reverse course in days. This is
-            a bigger ask — and we need a bigger number.
+            a bigger ask; and we need a bigger number.
           </p>
         </FadeIn>
 
