@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/full-page-link";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/fade-in";
@@ -14,24 +14,26 @@ export default function PetitionPage() {
   return (
     <article className="container-edit py-16 md:py-24 max-w-3xl">
       <FadeIn>
-        <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6">
-          The petition · April 2026
-        </p>
         <h1
           className="font-serif text-ink leading-[1.02] tracking-[-0.025em]"
           style={{ fontSize: "var(--text-display-lg)" }}
         >
           The case against Bon Appétit at Penn
         </h1>
-        <div className="mt-8 flex flex-wrap items-center gap-4">
-          <LiveCount verbose />
-          <Link
-            href="/sign"
-            className="group inline-flex items-center gap-2 rounded-full bg-ink text-cream-50 px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-accent"
-          >
-            Add my signature
-            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-          </Link>
+        <div className="mt-8 flex w-full flex-wrap items-end justify-between gap-x-6 gap-y-3">
+          <div className="flex flex-wrap items-end gap-3">
+            <Link
+              href="/sign"
+              className="group inline-flex items-center gap-2 rounded-none bg-ink text-cream-50 px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-accent"
+            >
+              Add my signature
+              <ArrowRight
+                size={14}
+                className="group-hover:translate-x-0.5 transition-transform"
+              />
+            </Link>
+          </div>
+          <LiveCount verbose className="shrink-0 self-end" />
         </div>
       </FadeIn>
 
@@ -180,14 +182,14 @@ export default function PetitionPage() {
       <FadeIn delay={0.2} className="mt-16 flex flex-wrap gap-4 items-center">
         <Link
           href="/sign"
-          className="group inline-flex items-center gap-2 rounded-full bg-ink text-cream-50 px-6 py-3 font-medium transition-all duration-200 hover:bg-accent hover:scale-[1.02]"
+          className="group inline-flex items-center gap-2 rounded-none bg-ink text-cream-50 px-6 py-3 font-medium transition-all duration-200 hover:bg-accent hover:scale-[1.02]"
         >
           Sign the petition
           <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
         </Link>
         <Link
           href="/evidence"
-          className="inline-flex items-center gap-2 rounded-full border border-rule px-6 py-3 text-ink transition-all duration-200 hover:border-ink"
+          className="inline-flex items-center gap-2 rounded-none border border-rule px-6 py-3 text-ink transition-all duration-200 hover:border-ink"
         >
           See every cited source
         </Link>

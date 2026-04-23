@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/full-page-link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { LiveCount } from "./live-count";
@@ -12,14 +12,6 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="container-edit pt-16 md:pt-28 pb-16 md:pb-24">
-        <motion.p
-          initial={{ opacity: 0, y: reduce ? 0 : 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease }}
-          className="text-xs tracking-[0.2em] uppercase text-accent font-medium mb-6"
-        >
-          A petition to end Bon Appétit at Penn
-        </motion.p>
 
         <motion.h1
           initial={{ opacity: 0, y: reduce ? 0 : 24 }}
@@ -48,26 +40,49 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, y: reduce ? 0 : 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45, ease }}
-          className="mt-10 flex flex-wrap items-center gap-4"
+          transition={{ duration: 0.6, delay: 0.4, ease }}
+          className="mt-10 flex w-full max-w-2xl flex-wrap items-end justify-between gap-x-6 gap-y-3"
+          aria-live="polite"
+        >
+          <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+            <Link
+              href="/sign"
+              className="group inline-flex items-center gap-2 rounded-none bg-ink text-cream-50 px-6 py-3 text-[0.95rem] font-medium transition-all duration-200 hover:bg-accent hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Sign the petition
+              <ArrowRight
+                size={16}
+                className="transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </Link>
+            <Link
+              href="/petition"
+              className="inline-flex items-center gap-2 rounded-none border border-rule px-6 py-3 text-[0.95rem] text-ink transition-all duration-200 hover:border-ink hover:bg-cream-200"
+            >
+              Read the full petition
+            </Link>
+          </div>
+          <LiveCount verbose plain className="shrink-0 self-end" />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: reduce ? 0 : 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.55, ease }}
+          className="mt-6"
         >
           <Link
-            href="/sign"
-            className="group inline-flex items-center gap-2 rounded-full bg-ink text-cream-50 px-6 py-3 text-[0.95rem] font-medium transition-all duration-200 hover:bg-accent hover:scale-[1.02] active:scale-[0.98]"
+            href="/testimonies"
+            className="group inline-flex items-center gap-2 text-[0.95rem] text-ink-soft transition-colors hover:text-ink"
           >
-            Sign the petition
+            <span className="underline decoration-accent/60 decoration-[1.5px] underline-offset-[6px] transition-colors group-hover:decoration-accent">
+              I&apos;ve had a bad experience with Penn Dining
+            </span>
             <ArrowRight
-              size={16}
+              size={14}
               className="transition-transform duration-200 group-hover:translate-x-0.5"
             />
           </Link>
-          <Link
-            href="/petition"
-            className="inline-flex items-center gap-2 rounded-full border border-rule px-6 py-3 text-[0.95rem] text-ink transition-all duration-200 hover:border-ink hover:bg-cream-200"
-          >
-            Read the full petition
-          </Link>
-          <LiveCount verbose className="sm:hidden mt-2" />
         </motion.div>
 
       </div>

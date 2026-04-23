@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/full-page-link";
 import { createClient } from "@/lib/supabase/server";
 import { FadeIn } from "@/components/fade-in";
 import { Thermometer } from "@/components/thermometer";
-import { formatNumber, relativeTime } from "@/lib/utils";
+import { formatDate, formatNumber, relativeTime } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Signatures",
-  description: "Public list of Penn community members who have signed the petition.",
+  description: "Public list of people who have signed the petition.",
 };
 
 export const revalidate = 0;
@@ -27,7 +27,9 @@ export default async function SignaturesPage() {
   const [{ data: sigs }, { data: countRow }] = await Promise.all([
     supabase
       .from("signatures")
-      .select("display_name, affiliation, school, class_year, reason, created_at")
+      .select(
+        "display_name, affiliation, school, class_year, reason, created_at, signature_date"
+      )
       .eq("display_publicly", true)
       .eq("verified", true)
       .order("created_at", { ascending: false })
@@ -52,8 +54,8 @@ export default async function SignaturesPage() {
             {formatNumber(total)} and growing.
           </h1>
           <p className="mt-6 text-lg text-ink-soft leading-relaxed">
-            A partial list of Penn students, faculty, staff, and alumni who have
-            added their name. Only signatories who opted in are shown.
+            A partial list of people who have added their name. Only
+            signatories who opted in are shown.
           </p>
         </FadeIn>
         <FadeIn delay={0.1} className="mt-10">
@@ -62,7 +64,7 @@ export default async function SignaturesPage() {
         <FadeIn delay={0.15} className="mt-6">
           <Link
             href="/sign"
-            className="inline-flex items-center gap-2 rounded-full bg-ink text-cream-50 px-5 py-2.5 text-sm font-medium hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-2 rounded-none bg-ink text-cream-50 px-5 py-2.5 text-sm font-medium hover:bg-accent transition-colors"
           >
             Add your name →
           </Link>
@@ -72,7 +74,15 @@ export default async function SignaturesPage() {
       <div className="mt-14">
         {sigs && sigs.length > 0 ? (
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-10">
-            {sigs.map((s, i) => (
+            {sigs.map((s, i) => {
+              const showAffiliation =
+                s.affiliation &&
+                !(
+                  s.affiliation === "community" &&
+                  !s.school &&
+                  !s.class_year
+                );
+              return (
               <FadeIn
                 key={`${s.display_name}-${i}`}
                 delay={Math.min(i * 0.01, 0.2)}
@@ -88,15 +98,22 @@ export default async function SignaturesPage() {
                   </span>
                 </div>
                 <p className="text-xs text-ink-muted mt-0.5">
-                  {AFFIL_LABEL[s.affiliation] ?? s.affiliation}
-                  {s.school && <> · {s.school}</>}
-                  {s.class_year && <> · {s.class_year}</>}
+                  Signed {formatDate(s.signature_date ?? s.created_at)}
+                  {showAffiliation && (
+                    <>
+                      {" · "}
+                      {AFFIL_LABEL[s.affiliation] ?? s.affiliation}
+                      {s.school && <> · {s.school}</>}
+                      {s.class_year && <> · {s.class_year}</>}
+                    </>
+                  )}
                 </p>
                 {s.reason && (
                   <p className="text-sm text-ink-soft mt-2 italic">&ldquo;{s.reason}&rdquo;</p>
                 )}
               </FadeIn>
-            ))}
+            );
+            })}
           </ul>
         ) : (
           <div className="rounded-xl border border-dashed border-rule p-10 text-center text-ink-muted">

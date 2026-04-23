@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Fraunces, Inter, Newsreader } from "next/font/google";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import "./globals.css";
@@ -17,6 +17,13 @@ const inter = Inter({
   display: "swap",
 });
 
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-newsreader",
+  display: "swap",
+  weight: ["400", "600", "700"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://remakepenndining.org"
@@ -31,14 +38,14 @@ export const metadata: Metadata = {
     type: "website",
     title: "Remake Penn Dining",
     description:
-      "The case against Bon Appétit at Penn (evidence, signatures, and testimonies).",
+      "The case against Bon Appétit at Penn (evidence, signatures, and personal experiences).",
     images: ["/api/og"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Remake Penn Dining",
     description:
-      "The case against Bon Appétit at Penn (evidence, signatures, and testimonies).",
+      "The case against Bon Appétit at Penn (evidence, signatures, and personal experiences).",
     images: ["/api/og"],
   },
   robots: { index: true, follow: true },
@@ -50,7 +57,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${inter.variable} ${newsreader.variable}`}
+    >
       <body className="min-h-dvh flex flex-col">
         <Nav />
         <main className="flex-1">{children}</main>

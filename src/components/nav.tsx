@@ -1,16 +1,14 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/full-page-link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { LiveCount } from "./live-count";
-
 const links = [
   { href: "/petition", label: "Petition" },
   { href: "/evidence", label: "Evidence" },
   { href: "/compare", label: "Compare" },
-  { href: "/testimonies", label: "Testimonies" },
+  { href: "/testimonies", label: "Personal experiences" },
 ];
 
 export function Nav() {
@@ -36,9 +34,9 @@ export function Nav() {
           : "bg-transparent border-b border-transparent"
       )}
     >
-      <div className="container-edit flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="group flex items-center gap-3">
-          <span className="font-serif text-[1.05rem] tracking-tight text-ink">
+      <div className="container-edit flex h-16 items-center justify-between gap-3 md:gap-6">
+        <Link href="/" className="group flex min-w-0 items-center gap-3">
+          <span className="whitespace-nowrap font-nav-mark font-semibold text-[0.95rem] sm:text-[1.02rem] md:text-[1.06rem] tracking-[-0.02em] text-ink leading-none">
             Remake Penn Dining
           </span>
         </Link>
@@ -64,7 +62,7 @@ export function Nav() {
         <div className="flex items-center gap-3">
           <Link
             href="/sign"
-            className="inline-flex items-center rounded-full bg-ink text-cream-50 px-4 py-2 text-[0.875rem] font-medium transition-all duration-200 hover:bg-accent hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex items-center whitespace-nowrap rounded-none bg-ink text-cream-50 px-3 sm:px-4 py-2 text-[0.8125rem] sm:text-[0.875rem] font-medium transition-all duration-200 hover:bg-accent hover:scale-[1.02] active:scale-[0.98]"
           >
             Sign the petition
           </Link>

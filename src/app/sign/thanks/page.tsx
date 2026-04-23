@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/full-page-link";
 import { CheckCircle2 } from "lucide-react";
 import { FadeIn } from "@/components/fade-in";
 import { ShareKit } from "@/components/share-kit";
@@ -26,29 +26,28 @@ export default function ThanksPage() {
           the most effective thing you can do in the next sixty seconds is send
           this to three friends.
         </p>
-        <div className="mt-8">
-          <LiveCount verbose />
+        <div className="mt-8 flex w-full flex-wrap items-end justify-between gap-x-6 gap-y-3">
+          <div className="flex flex-wrap items-end gap-3">
+            <Link
+              href="/testimonies/new"
+              className="inline-flex items-center gap-2 rounded-none bg-ink text-cream-50 px-6 py-3 font-medium hover:bg-accent transition-colors"
+            >
+              Share your experience →
+            </Link>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 rounded-none border border-rule px-6 py-3 text-ink hover:border-ink transition-colors"
+            >
+              Back to the case
+            </Link>
+          </div>
+          <LiveCount verbose className="shrink-0 self-end" />
         </div>
       </FadeIn>
 
       <FadeIn delay={0.15} className="mt-12">
         <h2 className="font-serif text-xl text-ink mb-4">Share the campaign</h2>
         <ShareKit />
-      </FadeIn>
-
-      <FadeIn delay={0.25} className="mt-12 flex flex-wrap gap-4">
-        <Link
-          href="/testimonies/new"
-          className="inline-flex items-center gap-2 rounded-full bg-ink text-cream-50 px-6 py-3 font-medium hover:bg-accent transition-colors"
-        >
-          Share your experience →
-        </Link>
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 rounded-full border border-rule px-6 py-3 text-ink hover:border-ink transition-colors"
-        >
-          Back to the case
-        </Link>
       </FadeIn>
     </section>
   );

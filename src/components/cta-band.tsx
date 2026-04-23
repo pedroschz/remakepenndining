@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/full-page-link";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "./fade-in";
 import { Thermometer } from "./thermometer";
@@ -17,7 +17,7 @@ export function CtaBand() {
             className="font-serif leading-[1.02] tracking-[-0.02em]"
             style={{ fontSize: "var(--text-display-lg)" }}
           >
-            Sign with your <span className="italic">@upenn.edu</span> email.
+            Add your name to the petition.
           </h2>
           <p className="mt-6 text-lg text-cream-300/90 leading-relaxed max-w-2xl">
             Every signature increases pressure. The 2020 worker petition gathered
@@ -33,7 +33,7 @@ export function CtaBand() {
         <FadeIn delay={0.25} className="mt-10 flex flex-wrap gap-4">
           <Link
             href="/sign"
-            className="group inline-flex items-center gap-2 rounded-full bg-cream-50 text-ink px-6 py-3 font-medium transition-all duration-200 hover:bg-accent hover:text-cream-50 hover:scale-[1.02]"
+            className="group inline-flex items-center gap-2 rounded-none bg-cream-50 text-ink px-6 py-3 font-medium transition-all duration-200 hover:bg-accent hover:text-cream-50 hover:scale-[1.02]"
           >
             Sign the petition
             <ArrowRight
@@ -43,7 +43,7 @@ export function CtaBand() {
           </Link>
           <Link
             href="/testimonies/new"
-            className="inline-flex items-center gap-2 rounded-full border border-cream-50/30 px-6 py-3 text-cream-50 transition-all duration-200 hover:border-cream-50 hover:bg-cream-50/5"
+            className="inline-flex items-center gap-2 rounded-none border border-cream-50/30 px-6 py-3 text-cream-50 transition-all duration-200 hover:border-cream-50 hover:bg-cream-50/5"
           >
             Share your experience
           </Link>

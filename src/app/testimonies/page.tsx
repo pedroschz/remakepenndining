@@ -1,14 +1,15 @@
-import Link from "next/link";
+import Link from "@/components/full-page-link";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { isSafeTestimonyImageObjectPath } from "@/lib/utils";
 import { FadeIn } from "@/components/fade-in";
 import { TestimonyCard, type Testimony } from "@/components/testimony-card";
 
 export const metadata: Metadata = {
-  title: "Testimonies",
+  title: "Personal experiences",
   description:
-    "Anonymous student experiences with Penn Dining. Community-moderated.",
+    "Anonymous personal experiences with Penn Dining. Community-moderated.",
 };
 
 export const revalidate = 0;
@@ -35,39 +36,34 @@ export default async function TestimoniesPage({
     dining_hall: r.dining_hall,
     incident_month: r.incident_month,
     affiliation: r.affiliation,
-    image_urls: (r.image_paths ?? []).map(
-      (p: string) => `${base}/storage/v1/object/public/testimony-images/${p}`
-    ),
+    image_urls: (r.image_paths ?? [])
+      .filter((p: string) => isSafeTestimonyImageObjectPath(p))
+      .map(
+        (p: string) => `${base}/storage/v1/object/public/testimony-images/${p}`
+      ),
   }));
 
   return (
     <section className="container-edit py-16 md:py-24">
       <div className="max-w-3xl">
         <FadeIn>
-          <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6">
-            Testimonies
-          </p>
           <h1
             className="font-serif text-ink leading-[1.02] tracking-[-0.025em]"
             style={{ fontSize: "var(--text-display-lg)" }}
           >
             In our own words.
           </h1>
-          <p className="mt-6 text-lg text-ink-soft leading-relaxed">
-            Anonymous accounts of what Penn Dining has actually been like. Each
-            appears instantly; the community can flag anything off-guidelines.
-          </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/testimonies/new"
-              className="inline-flex items-center gap-2 rounded-full bg-ink text-cream-50 px-5 py-2.5 text-sm font-medium hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-2 rounded-none bg-ink text-cream-50 px-5 py-2.5 text-sm font-medium hover:bg-accent transition-colors"
             >
               Share yours
               <ArrowRight size={14} />
             </Link>
             <Link
               href="/sign"
-              className="inline-flex items-center gap-2 rounded-full border border-rule px-5 py-2.5 text-sm text-ink hover:border-ink transition-colors"
+              className="inline-flex items-center gap-2 rounded-none border border-rule px-5 py-2.5 text-sm text-ink hover:border-ink transition-colors"
             >
               Sign the petition
             </Link>
@@ -86,7 +82,7 @@ export default async function TestimoniesPage({
           <FadeIn>
             <div className="rounded-xl border border-dashed border-rule p-10 text-center">
               <p className="text-ink-muted">
-                No testimonies yet.{" "}
+                No personal experiences yet.{" "}
                 <Link
                   href="/testimonies/new"
                   className="text-ink underline decoration-accent decoration-2 underline-offset-4"

@@ -2,148 +2,123 @@
 
 import { useState, useTransition } from "react";
 import { signPetition } from "@/app/actions/sign";
-import { signOut } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
 
-type Props = { email: string; defaultName?: string };
+type Props = { signatureDateDefault: string };
 
-const affiliations = [
-  { value: "undergraduate", label: "Undergraduate student" },
-  { value: "graduate", label: "Graduate / professional student" },
-  { value: "faculty", label: "Faculty" },
-  { value: "staff", label: "Staff" },
-  { value: "alum", label: "Alum" },
-  { value: "parent", label: "Parent" },
-  { value: "community", label: "Community member" },
-];
-
-export function SignForm({ email, defaultName }: Props) {
+export function SignForm({ signatureDateDefault }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [affil, setAffil] = useState<string>("undergraduate");
+  const [printedName, setPrintedName] = useState("");
+  const [attestation, setAttestation] = useState(false);
+
+  const canSubmit =
+    printedName.trim().length >= 2 && attestation && !pending;
 
   return (
     <form
       action={(fd) =>
         startTransition(async () => {
+          setError(null);
           const res = await signPetition(fd);
           if (!res.ok) setError(res.error);
         })
       }
-      className="rounded-xl border border-rule bg-cream-50 p-8 md:p-10 space-y-5"
+      className="relative rounded-xl border border-rule bg-cream-50 p-8 md:p-10 space-y-5"
     >
-      <div className="flex items-center justify-between flex-wrap gap-3 pb-5 border-b border-rule">
-        <div>
-          <p className="text-xs tracking-[0.15em] uppercase text-ink-muted">
-            Signed in as
-          </p>
-          <p className="font-medium text-ink">{email}</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => startTransition(() => { void signOut(); })}
-          className="text-sm text-ink-muted hover:text-accent underline decoration-rule decoration-2 underline-offset-4"
-        >
-          Sign out
-        </button>
-      </div>
-
       {error && (
         <div className="rounded-md border border-accent/40 bg-accent/5 text-accent text-sm px-4 py-3">
           {error}
         </div>
       )}
 
-      <Field label="Display name" hint="Shown publicly if you opt in below.">
+      <Field label="Printed name" hint="As it should appear if you opt in below.">
         <input
           name="displayName"
           required
           minLength={2}
           maxLength={80}
-          defaultValue={defaultName}
-          placeholder="Jane Franklin"
+          value={printedName}
+          onChange={(e) => setPrintedName(e.target.value)}
+          placeholder="Ben Franklin"
           className="w-full rounded-md border border-rule bg-cream-50 px-4 py-3 text-ink focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-ink"
         />
       </Field>
 
-      <Field label="Affiliation">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {affiliations.map((a) => (
-            <label
-              key={a.value}
-              className={cn(
-                "cursor-pointer rounded-md border px-3 py-2.5 text-sm text-center transition-colors",
-                affil === a.value
-                  ? "border-ink bg-ink text-cream-50"
-                  : "border-rule text-ink-soft hover:border-ink"
-              )}
-            >
-              <input
-                type="radio"
-                name="affiliation"
-                value={a.value}
-                className="sr-only"
-                checked={affil === a.value}
-                onChange={() => setAffil(a.value)}
-              />
-              {a.label}
-            </label>
-          ))}
-        </div>
+      <Field
+        label="Penn email"
+      >
+        <input
+          name="email"
+          type="email"
+          autoComplete="email"
+          maxLength={160}
+          placeholder="you@upenn.edu"
+          className="w-full rounded-md border border-rule bg-cream-50 px-4 py-3 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-ink"
+        />
       </Field>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="School / department" hint="Optional.">
+      <Field label="Date of signature">
+        <input
+          name="signatureDate"
+          type="date"
+          required
+          defaultValue={signatureDateDefault}
+          className="w-full rounded-md border border-rule bg-cream-50 px-4 py-[10px] text-ink focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-ink"
+        />
+      </Field>
+
+      <div className="rounded-lg border border-rule bg-cream-50/80 px-4 py-4 space-y-4">
+        <label className="flex items-start gap-3 cursor-pointer">
           <input
-            name="school"
-            maxLength={80}
-            placeholder="College of Arts & Sciences"
-            className="w-full rounded-md border border-rule bg-cream-50 px-4 py-3 text-ink focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-ink"
+            type="checkbox"
+            name="attestation"
+            checked={attestation}
+            onChange={(e) => setAttestation(e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-rule accent-accent"
           />
-        </Field>
-        <Field label="Class year / role" hint="Optional.">
+          <span className="text-sm text-ink-soft leading-snug">
+            I certify that my printed name, the date above, and my email (if I
+            entered one) are truthful and accurate to the best of my
+            knowledge.
+          </span>
+        </label>
+
+        <label className="flex items-start gap-3 cursor-pointer">
           <input
-            name="classYear"
-            maxLength={16}
-            placeholder="2028"
-            className="w-full rounded-md border border-rule bg-cream-50 px-4 py-3 text-ink focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-ink"
+            type="checkbox"
+            name="displayPublicly"
+            className="mt-1 h-4 w-4 rounded border-rule accent-accent"
           />
-        </Field>
+          <span className="text-sm text-ink-soft leading-snug">
+            Display my printed name on the public signatures list. Your email is
+            never shown.
+          </span>
+        </label>
       </div>
 
-      <Field
-        label="Why I'm signing"
-        hint="Optional. Shown publicly. 280 characters."
+      <div
+        className="absolute -left-[10000px] h-px w-px overflow-hidden"
+        aria-hidden="true"
       >
-        <textarea
-          name="reason"
-          maxLength={280}
-          rows={3}
-          placeholder="One line on why this matters to you."
-          className="w-full rounded-md border border-rule bg-cream-50 px-4 py-3 text-ink focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-ink resize-none"
-        />
-      </Field>
-
-      <label className="flex items-start gap-3 cursor-pointer">
+        <label htmlFor="sign-website-hp">Website</label>
         <input
-          type="checkbox"
-          name="displayPublicly"
-          defaultChecked
-          className="mt-1 h-4 w-4 rounded border-rule accent-accent"
+          type="text"
+          id="sign-website-hp"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
         />
-        <span className="text-sm text-ink-soft leading-snug">
-          Display my name and affiliation publicly in the signatures list. A
-          public signatures list makes the petition more credible; your email
-          is never shown.
-        </span>
-      </label>
+      </div>
 
       <button
         type="submit"
-        disabled={pending}
+        disabled={!canSubmit}
         className={cn(
-          "w-full rounded-full bg-ink text-cream-50 px-6 py-3 font-medium transition-all duration-200 hover:bg-accent hover:scale-[1.01] active:scale-[0.99]",
-          pending && "opacity-60"
+          "w-full rounded-none bg-ink text-cream-50 px-6 py-3 font-medium transition-all duration-200",
+          canSubmit
+            ? "hover:bg-accent hover:scale-[1.01] active:scale-[0.99]"
+            : "opacity-50 cursor-not-allowed"
         )}
       >
         {pending ? "Signing…" : "Add my signature"}
@@ -163,9 +138,13 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="flex items-baseline justify-between mb-1.5">
+      <span className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1.5">
         <span className="text-sm text-ink font-medium">{label}</span>
-        {hint && <span className="text-xs text-ink-faint">{hint}</span>}
+        {hint && (
+          <span className="text-xs text-ink-faint sm:text-right sm:max-w-[55%]">
+            {hint}
+          </span>
+        )}
       </span>
       {children}
     </label>

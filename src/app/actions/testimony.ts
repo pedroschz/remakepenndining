@@ -2,15 +2,33 @@
 
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import sharp from "sharp";
 import { z } from "zod";
-import { createClient, createServiceClient } from "@/lib/supabase/server";
-import { hashIp } from "@/lib/utils";
+import { createServiceClient } from "@/lib/supabase/server";
+import { hashIp, isSafeTestimonyImageObjectPath } from "@/lib/utils";
+import {
+  countHttpUrls,
+  honeypotClean,
+  maxConsecutiveSameChar,
+} from "@/lib/spam-guard";
+
+const IMAGE_MAX_DIMENSION = 1600;
+const IMAGE_WEBP_QUALITY = 80;
 
 const BANNED_PATTERNS = [
   /\b(kill|murder|rape)\s+[a-z]+\b/i,
   /\bn[i1]gg[ae]r/i,
   /\bf[a@]gg?[o0]t/i,
 ];
+
+const POST_SHORT_WINDOW_MS = 15 * 60 * 1000;
+const POST_SHORT_WINDOW_MAX = 2;
+const POST_DAILY_IP_MAX = 12;
+const MAX_URLS_IN_BODY = 8;
+const MAX_CHAR_RUN = 36;
+const MAX_IMAGE_BYTES_PER_POST = 14 * 1024 * 1024;
+
+const REPORT_HOURLY_IP_MAX = 15;
 
 const DINING_HALLS = [
   "1920 Commons",
@@ -50,6 +68,10 @@ export type TestimonyResult =
   | { ok: false; error: string };
 
 export async function submitTestimony(formData: FormData): Promise<TestimonyResult> {
+  if (!honeypotClean(formData)) {
+    return { ok: false, error: "Could not save your experience. Please try again." };
+  }
+
   const parsed = TestimonySchema.safeParse({
     body: formData.get("body"),
     diningHall: formData.get("diningHall") ?? undefined,
@@ -70,6 +92,20 @@ export async function submitTestimony(formData: FormData): Promise<TestimonyResu
     };
   }
 
+  if (countHttpUrls(body) > MAX_URLS_IN_BODY) {
+    return {
+      ok: false,
+      error: "Too many links in one post. Please remove extra URLs and try again.",
+    };
+  }
+
+  if (maxConsecutiveSameChar(body) > MAX_CHAR_RUN) {
+    return {
+      ok: false,
+      error: "This post looks like automated filler. Please use normal sentences and try again.",
+    };
+  }
+
   const hdrs = await headers();
   const ip =
     hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() ??
@@ -77,37 +113,82 @@ export async function submitTestimony(formData: FormData): Promise<TestimonyResu
     "0.0.0.0";
   const ipHash = await hashIp(ip);
 
-  const supabase = await createClient();
+  const service = await createServiceClient();
+  const shortSince = new Date(Date.now() - POST_SHORT_WINDOW_MS).toISOString();
+  const daySince = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-  const { data: recent } = await supabase
+  const { count: shortCount } = await service
     .from("testimonies")
-    .select("id, created_at")
+    .select("id", { count: "exact", head: true })
     .eq("ip_hash", ipHash)
-    .gte("created_at", new Date(Date.now() - 5 * 60 * 1000).toISOString());
+    .gte("created_at", shortSince);
 
-  if (recent && recent.length >= 2) {
+  if (shortCount !== null && shortCount >= POST_SHORT_WINDOW_MAX) {
     return {
       ok: false,
-      error: "You've posted a lot recently. Please wait a few minutes before posting again.",
+      error: "You've posted several times recently. Please wait before posting again.",
     };
   }
 
-  const service = await createServiceClient();
+  const { count: dayCount } = await service
+    .from("testimonies")
+    .select("id", { count: "exact", head: true })
+    .eq("ip_hash", ipHash)
+    .gte("created_at", daySince);
+
+  if (dayCount !== null && dayCount >= POST_DAILY_IP_MAX) {
+    return {
+      ok: false,
+      error: "Daily post limit from this network has been reached. Please try again tomorrow.",
+    };
+  }
+
   const imagePaths: string[] = [];
   const files = formData.getAll("images").filter((v): v is File => v instanceof File && v.size > 0);
 
+  let totalBytes = 0;
   for (const file of files.slice(0, 3)) {
     if (file.size > 5 * 1024 * 1024) continue;
-    if (!/^image\/(jpe?g|png|webp|heic)$/.test(file.type)) continue;
-    const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-    const path = `${ipHash}/${crypto.randomUUID()}.${ext}`;
+    if (!/^image\/(jpe?g|png|webp|heic|heif)$/.test(file.type)) continue;
+    totalBytes += file.size;
+    if (totalBytes > MAX_IMAGE_BYTES_PER_POST) {
+      return {
+        ok: false,
+        error: "Total image size is too large for one post. Remove or shrink images and try again.",
+      };
+    }
+
+    let processed: Buffer;
+    try {
+      processed = await sharp(Buffer.from(await file.arrayBuffer()), {
+        failOn: "none",
+      })
+        .rotate()
+        .resize({
+          width: IMAGE_MAX_DIMENSION,
+          height: IMAGE_MAX_DIMENSION,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .webp({ quality: IMAGE_WEBP_QUALITY })
+        .toBuffer();
+    } catch {
+      continue;
+    }
+
+    const path = `${ipHash}/${crypto.randomUUID()}.webp`;
+    if (!isSafeTestimonyImageObjectPath(path)) continue;
+
     const { error: upErr } = await service.storage
       .from("testimony-images")
-      .upload(path, file, { contentType: file.type, cacheControl: "3600" });
+      .upload(path, processed, {
+        contentType: "image/webp",
+        cacheControl: "31536000",
+      });
     if (!upErr) imagePaths.push(path);
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await service
     .from("testimonies")
     .insert({
       body,
@@ -123,7 +204,7 @@ export async function submitTestimony(formData: FormData): Promise<TestimonyResu
     .single();
 
   if (error || !data) {
-    return { ok: false, error: "Could not save your testimony. Please try again." };
+    return { ok: false, error: "Could not save your experience. Please try again." };
   }
 
   revalidatePath("/testimonies");
@@ -144,6 +225,10 @@ const ReportSchema = z.object({
 });
 
 export async function reportTestimony(formData: FormData) {
+  if (!honeypotClean(formData)) {
+    return { ok: false, error: "Could not file the report." };
+  }
+
   const parsed = ReportSchema.safeParse({
     testimonyId: formData.get("testimonyId"),
     reason: formData.get("reason"),
@@ -159,8 +244,22 @@ export async function reportTestimony(formData: FormData) {
     "0.0.0.0";
   const ipHash = await hashIp(ip);
 
-  const supabase = await createClient();
-  const { error } = await supabase.from("testimony_reports").insert({
+  const service = await createServiceClient();
+  const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count: reportHour } = await service
+    .from("testimony_reports")
+    .select("id", { count: "exact", head: true })
+    .eq("ip_hash", ipHash)
+    .gte("created_at", hourAgo);
+
+  if (reportHour !== null && reportHour >= REPORT_HOURLY_IP_MAX) {
+    return {
+      ok: false,
+      error: "Too many reports from this network recently. Please try again later.",
+    };
+  }
+
+  const { error } = await service.from("testimony_reports").insert({
     testimony_id: parsed.data.testimonyId,
     reason: parsed.data.reason,
     note: parsed.data.note || null,

@@ -32,7 +32,7 @@ export function ShareKit() {
         type="button"
         onClick={() => copy("link")}
         className={cn(
-          "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all duration-200",
+          "inline-flex items-center gap-2 rounded-none border px-4 py-2 text-sm transition-all duration-200",
           copied === "link"
             ? "border-accent bg-accent/10 text-accent"
             : "border-rule text-ink hover:border-ink"
@@ -45,7 +45,7 @@ export function ShareKit() {
         type="button"
         onClick={() => copy("text")}
         className={cn(
-          "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all duration-200",
+          "inline-flex items-center gap-2 rounded-none border px-4 py-2 text-sm transition-all duration-200",
           copied === "text"
             ? "border-accent bg-accent/10 text-accent"
             : "border-rule text-ink hover:border-ink"
@@ -58,15 +58,15 @@ export function ShareKit() {
         href={twitterUrl}
         target="_blank"
         rel="noreferrer noopener"
-        className="inline-flex items-center gap-2 rounded-full border border-rule px-4 py-2 text-sm text-ink hover:border-ink transition-colors"
+        className="inline-flex items-center gap-2 rounded-none border border-rule px-4 py-2 text-sm text-ink hover:border-ink transition-colors"
       >
         <XLogo /> Post to X
       </a>
       <a
         href={mailUrl}
-        className="inline-flex items-center gap-2 rounded-full border border-rule px-4 py-2 text-sm text-ink hover:border-ink transition-colors"
+        className="inline-flex items-center gap-2 rounded-none border border-rule px-4 py-2 text-sm text-ink hover:border-ink transition-colors"
       >
-        <Mail size={14} /> Email
+        <Mail size={14} /> Penn email
       </a>
     </div>
   );

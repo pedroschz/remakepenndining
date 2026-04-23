@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { Flag } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState, useTransition } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Flag, X } from "lucide-react";
 import { reportTestimony } from "@/app/actions/testimony";
 import { cn, relativeTime, formatDate } from "@/lib/utils";
 
@@ -27,13 +29,29 @@ const REPORT_REASONS = [
 export function TestimonyCard({ t }: { t: Testimony }) {
   const [reportOpen, setReportOpen] = useState(false);
   const [reported, setReported] = useState(false);
+  const [reportError, setReportError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!lightboxUrl) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxUrl(null);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightboxUrl]);
 
   return (
     <article className="py-8 border-b border-rule last:border-0">
       <header className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-muted mb-3">
         {t.affiliation && (
-          <span className="inline-flex px-2 py-0.5 rounded-full bg-cream-200 text-ink tracking-[0.08em] uppercase text-[10px]">
+          <span className="inline-flex px-2 py-0.5 rounded-md bg-cream-200 text-ink tracking-[0.08em] uppercase text-[10px]">
             {t.affiliation}
           </span>
         )}
@@ -55,24 +73,62 @@ export function TestimonyCard({ t }: { t: Testimony }) {
       {t.image_urls.length > 0 && (
         <div className="mt-4 grid grid-cols-3 gap-2 max-w-lg">
           {t.image_urls.map((url) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <a
+            <button
               key={url}
-              href={url}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="block aspect-square overflow-hidden rounded-md border border-rule bg-cream-200"
+              type="button"
+              onClick={() => setLightboxUrl(url)}
+              aria-label="View image"
+              className="group relative block aspect-square overflow-hidden rounded-md border border-rule bg-cream-200 cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-accent/60"
             >
-              <img
+              <Image
                 src={url}
                 alt=""
+                fill
+                sizes="(min-width: 640px) 170px, 33vw"
                 loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-300 hover:scale-[1.04]"
+                className="object-cover transition-transform duration-300 group-hover:scale-[1.04]"
               />
-            </a>
+            </button>
           ))}
         </div>
       )}
+
+      <AnimatePresence>
+        {lightboxUrl && (
+          <motion.div
+            key="lightbox"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            onClick={() => setLightboxUrl(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-ink/90 backdrop-blur-sm p-4 sm:p-8 cursor-zoom-out"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image viewer"
+          >
+            <motion.img
+              key={lightboxUrl}
+              src={lightboxUrl}
+              alt=""
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="max-h-[92vh] max-w-[92vw] rounded-md shadow-2xl object-contain cursor-default"
+            />
+            <button
+              type="button"
+              onClick={() => setLightboxUrl(null)}
+              aria-label="Close"
+              className="fixed top-4 right-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-cream-50/10 text-cream-50 backdrop-blur hover:bg-cream-50/20 focus:outline-none focus:ring-2 focus:ring-cream-50/60"
+            >
+              <X size={20} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <footer className="mt-4 flex items-center justify-end">
         {!reportOpen && !reported && (
@@ -93,13 +149,18 @@ export function TestimonyCard({ t }: { t: Testimony }) {
         <form
           action={(fd) =>
             startTransition(async () => {
+              setReportError(null);
               fd.append("testimonyId", t.id);
-              await reportTestimony(fd);
-              setReported(true);
-              setReportOpen(false);
+              const res = await reportTestimony(fd);
+              if (res.ok) {
+                setReported(true);
+                setReportOpen(false);
+              } else {
+                setReportError(res.error ?? "Could not file the report.");
+              }
             })
           }
-          className="mt-3 rounded-md border border-rule bg-cream-50 p-4 space-y-3"
+          className="relative mt-3 rounded-md border border-rule bg-cream-50 p-4 space-y-3"
         >
           <fieldset>
             <legend className="text-sm text-ink font-medium mb-2">
@@ -129,6 +190,22 @@ export function TestimonyCard({ t }: { t: Testimony }) {
             placeholder="Optional note"
             className="w-full rounded-md border border-rule bg-cream-50 px-3 py-2 text-sm"
           />
+          <div
+            className="absolute -left-[10000px] h-px w-px overflow-hidden"
+            aria-hidden="true"
+          >
+            <label htmlFor={`report-website-hp-${t.id}`}>Website</label>
+            <input
+              type="text"
+              id={`report-website-hp-${t.id}`}
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
+          {reportError && (
+            <p className="text-sm text-accent">{reportError}</p>
+          )}
           <div className="flex justify-end gap-2">
             <button
               type="button"
@@ -141,7 +218,7 @@ export function TestimonyCard({ t }: { t: Testimony }) {
               type="submit"
               disabled={pending}
               className={cn(
-                "text-sm rounded-full bg-ink text-cream-50 px-3 py-1.5 hover:bg-accent",
+                "text-sm rounded-none bg-ink text-cream-50 px-3 py-1.5 hover:bg-accent",
                 pending && "opacity-60"
               )}
             >

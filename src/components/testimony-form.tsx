@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { AlertCircle, Image as ImageIcon, X } from "lucide-react";
 import { submitTestimony } from "@/app/actions/testimony";
 import { communityGuidelines } from "@/lib/data";
@@ -24,7 +23,6 @@ const HALLS = [
 ];
 
 export function TestimonyForm() {
-  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<File[]>([]);
@@ -50,11 +48,11 @@ export function TestimonyForm() {
           setError(null);
           images.forEach((f) => fd.append("images", f));
           const res = await submitTestimony(fd);
-          if (res.ok) router.push("/testimonies?new=1");
+          if (res.ok) window.location.assign("/testimonies?new=1");
           else setError(res.error);
         })
       }
-      className="space-y-6"
+      className="relative space-y-6"
     >
       <div className="rounded-xl border border-rule bg-cream-50 p-6 md:p-8">
         <div className="flex items-start gap-3 mb-4">
@@ -62,7 +60,7 @@ export function TestimonyForm() {
           <div>
             <p className="font-medium text-ink">Community guidelines</p>
             <p className="text-sm text-ink-muted mt-1">
-              Testimonies publish immediately and are reviewed by the community.
+              Posts publish immediately and are reviewed by the community.
               Three reports auto-hide a post.
             </p>
           </div>
@@ -173,7 +171,7 @@ export function TestimonyForm() {
                   type="button"
                   onClick={() => setImages(images.filter((_, j) => j !== i))}
                   aria-label="Remove image"
-                  className="absolute top-1 right-1 h-5 w-5 inline-flex items-center justify-center rounded-full bg-ink text-cream-50 hover:bg-accent"
+                  className="absolute top-1 right-1 h-5 w-5 inline-flex items-center justify-center rounded-none bg-ink text-cream-50 hover:bg-accent"
                 >
                   <X size={12} />
                 </button>
@@ -183,7 +181,7 @@ export function TestimonyForm() {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="h-20 w-20 inline-flex flex-col items-center justify-center rounded-md border border-dashed border-rule text-ink-muted hover:border-ink hover:text-ink transition-colors"
+                className="h-20 w-20 inline-flex flex-col items-center justify-center rounded-none border border-dashed border-rule text-ink-muted hover:border-ink hover:text-ink transition-colors"
               >
                 <ImageIcon size={18} />
                 <span className="text-[10px] mt-1">Add</span>
@@ -204,17 +202,31 @@ export function TestimonyForm() {
         </div>
       </div>
 
+      <div
+        className="absolute -left-[10000px] h-px w-px overflow-hidden"
+        aria-hidden="true"
+      >
+        <label htmlFor="testimony-website-hp">Website</label>
+        <input
+          type="text"
+          id="testimony-website-hp"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+
       <button
         type="submit"
         disabled={!canSubmit}
         className={cn(
-          "w-full rounded-full bg-ink text-cream-50 px-6 py-3 font-medium transition-all duration-200",
+          "w-full rounded-none bg-ink text-cream-50 px-6 py-3 font-medium transition-all duration-200",
           canSubmit
             ? "hover:bg-accent hover:scale-[1.01] active:scale-[0.99]"
             : "opacity-50 cursor-not-allowed"
         )}
       >
-        {pending ? "Posting…" : "Post testimony"}
+        {pending ? "Posting…" : "Post experience"}
       </button>
     </form>
   );

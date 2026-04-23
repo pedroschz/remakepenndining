@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/full-page-link";
 import { FadeIn } from "./fade-in";
 import { timelineEvents, type TimelineEvent } from "@/lib/data";
 import { cn } from "@/lib/utils";

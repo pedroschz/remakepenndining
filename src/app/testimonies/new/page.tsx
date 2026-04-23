@@ -5,7 +5,7 @@ import { TestimonyForm } from "@/components/testimony-form";
 export const metadata: Metadata = {
   title: "Share your experience",
   description:
-    "Post an anonymous, respectful testimony about Penn Dining. Optional photos. Community-moderated.",
+    "Post an anonymous, respectful personal experience about Penn Dining. Optional photos. Community-moderated.",
 };
 
 export default function NewTestimonyPage() {

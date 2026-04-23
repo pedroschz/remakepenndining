@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/full-page-link";
 
 export function Footer() {
   return (
@@ -24,7 +24,7 @@ export function Footer() {
             <li><Link href="/petition" className="hover:text-ink">Read the petition</Link></li>
             <li><Link href="/evidence" className="hover:text-ink">Evidence timeline</Link></li>
             <li><Link href="/compare" className="hover:text-ink">Peer comparison</Link></li>
-            <li><Link href="/testimonies" className="hover:text-ink">Testimonies</Link></li>
+            <li><Link href="/testimonies" className="hover:text-ink">Personal experiences</Link></li>
           </ul>
         </div>
         <div>

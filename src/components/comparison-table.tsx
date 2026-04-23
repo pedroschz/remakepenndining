@@ -80,7 +80,7 @@ export function ComparisonTable() {
                     <td className="py-5 px-5">
                       <span
                         className={cn(
-                          "inline-flex rounded-full px-2.5 py-1 text-xs",
+                          "inline-flex rounded-none px-2.5 py-1 text-xs",
                           s.model === "self-op"
                             ? "bg-ink text-cream-50"
                             : s.model === "contracted"
