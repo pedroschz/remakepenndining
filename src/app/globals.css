@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #f7f4ee;
+  --color-cream-50: #fbf9f4;
+  --color-cream-100: #f7f4ee;
+  --color-cream-200: #efeadf;
+  --color-cream-300: #e3dccb;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #2a2a2a;
+  --color-ink-muted: #5a5a5a;
+  --color-ink-faint: #8a8a8a;
+  --color-rule: #d6cfbe;
+  --color-accent: #8b1818;
+  --color-accent-deep: #6a1010;
+  --color-accent-soft: #c75858;
+
+  --font-serif: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --text-display-xl: clamp(3.5rem, 7.5vw, 6.5rem);
+  --text-display-lg: clamp(2.75rem, 5.5vw, 4.5rem);
+  --text-display-md: clamp(2rem, 3.5vw, 3rem);
+
+  --ease-editorial: cubic-bezier(0.2, 0.65, 0.25, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--color-cream-100);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    letter-spacing: -0.005em;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-cream-50);
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  /* Thin hairline rules, editorial style */
+  hr {
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  /* Numeric emphasis — tabular figures for statistics */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-edit {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-edit { padding-inline: 3rem; }
+  }
+
+  .rule-soft {
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .drop-cap::first-letter {
+    font-family: var(--font-serif);
+    font-size: 4.5em;
+    line-height: 0.85;
+    float: left;
+    padding-right: 0.08em;
+    padding-top: 0.06em;
+    color: var(--color-accent);
+  }
+}
